@@ -1,0 +1,10 @@
+{
+  "name": "PromptVault AI",
+  "short_name": "PromptVault",
+  "description": "Premium AI prompt marketplace.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050507",
+  "theme_color": "#09090b",
+  "icons": []
+}
