@@ -1,40 +1,95 @@
-# PromptVault AI
+PromptVault AI 🚀
 
-Premium MERN prompt marketplace and community platform for AI prompts across ChatGPT, Midjourney, Claude, Gemini, Stable Diffusion, Sora, Suno, and more.
+A modern full-stack MERN platform for discovering, creating, sharing, and managing AI prompts. PromptVault AI helps developers, creators, and AI enthusiasts organize premium prompts for tools like ChatGPT, Gemini, Claude, Midjourney, and more.
 
-## Stack
+✨ Features
+🔐 Secure JWT Authentication & Authorization
+📝 Create, Update & Delete Prompts
+🔍 Search & Filter Prompts
+⭐ Ratings & Reviews System
+💳 Razorpay Payment Integration
+☁️ Cloudinary Image Uploads
+📱 Fully Responsive UI
+⚡ Smooth Animations with Framer Motion
+🛡️ Secure Backend with Middleware Protection
+👤 User Dashboard & Profile Management
+🛠️ Tech Stack
+Frontend
+React.js
+Vite
+Tailwind CSS
+Redux Toolkit
+React Router DOM
+Axios
+Framer Motion
+TanStack Query
+Backend
+Node.js
+Express.js
+MongoDB
+Mongoose
+JWT Authentication
+Razorpay API
+Multer
+Cloudinary
+📂 Project Structure
+PromptVault-AI/
+│
+├── frontend/          # React Frontend
+├── backend/           # Express Backend
+├── models/            # MongoDB Models
+├── routes/            # API Routes
+├── controllers/       # Business Logic
+├── middleware/        # Authentication & Security
+├── public/            # Static Assets
+└── README.md
+⚙️ Installation
+1️⃣ Clone Repository
+git clone https://github.com/your-username/PromptVault-AI.git
+2️⃣ Install Dependencies
+Frontend
+cd frontend
+npm install
+Backend
+cd backend
+npm install
+🔑 Environment Variables
 
-- Frontend: React, Vite, Tailwind CSS, Framer Motion, Redux Toolkit, React Router, TanStack Query, Axios, React Hook Form
-- Backend: Node.js, Express, MongoDB, Mongoose, JWT, bcrypt, Razorpay, Multer, Cloudinary, Helmet, rate limiting
-- Deployment: Vercel or Netlify for `client`, Render or Railway for `server`, MongoDB Atlas, Cloudinary CDN
+Create a .env file inside backend directory:
 
-## Local Setup
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_secret_key
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Copy backend env:
-   ```bash
-   cp server/.env.example server/.env
-   ```
-3. Fill `MONGO_URI`, `JWT_SECRET`, Razorpay, Cloudinary, and Google OAuth keys.
-4. Run both apps:
-   ```bash
-   npm run dev
-   ```
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 
-Frontend runs on `http://localhost:5173`. Backend runs on `http://localhost:5000`.
+RAZORPAY_KEY_ID=your_key
+RAZORPAY_SECRET=your_secret
+▶️ Run Project
+Start Backend
+npm run server
+Start Frontend
+npm run dev
+🚀 Deployment
+Frontend → Vercel / Netlify
+Backend → Render / Railway
+Database → MongoDB Atlas
+Media Storage → Cloudinary
+📚 Learning Outcomes
 
-## API Surface
+This project helped me improve my understanding of:
 
-- `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`
-- `GET /api/prompts`, `GET /api/prompts/:id`, `POST /api/prompts`
-- `POST /api/payments/create-order`, `POST /api/payments/verify`, `POST /api/payments/webhook`
-- `GET /api/reviews/:promptId`, `POST /api/reviews/:promptId`
-- `GET /api/creator/dashboard`
-- `GET /api/admin/stats`, `PATCH /api/admin/prompts/:id/moderate`
+Full-stack MERN development
+REST APIs
+Authentication & Authorization
+Payment Gateway Integration
+Secure Backend Architecture
+State Management
+Cloud Storage Integration
+Responsive UI Design
+👨‍💻 Author
 
-## Notes
+Developed by Aditya Choudhary.
 
-The frontend includes demo data so the polished UI works immediately. Connect `VITE_API_URL` and replace mock reads with `promptService` calls as your Atlas database fills up.
