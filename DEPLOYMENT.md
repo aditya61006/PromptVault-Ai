@@ -1,16 +1,15 @@
-# Deploy PromptVault AI
+# Separate Deployment Guide
 
-This repo is configured for:
+PromptVault AI is split into two independent apps:
 
-- Frontend: Vercel
-- Backend API: Render
-- Database: MongoDB Atlas
+- `client`: Vite React frontend
+- `server`: Express API backend
 
-## 1. Deploy Backend On Render
+Deploy them as two separate services.
 
-Use either the included `render.yaml` Blueprint or create a Render Web Service manually.
+## Backend On Render
 
-Manual settings:
+Create a Render Web Service from the `server` folder.
 
 ```text
 Root Directory: server
@@ -19,22 +18,22 @@ Start Command: npm start
 Health Check Path: /api/health
 ```
 
-Render environment variables:
+Backend environment variables:
 
 ```env
 NODE_ENV=production
 MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/promptvault
 JWT_SECRET=replace_with_a_long_random_secret
 JWT_EXPIRES_IN=15m
-CLIENT_URL=https://your-vercel-app.vercel.app
+CLIENT_URL=https://your-frontend-domain.com
 ```
 
-Add these only if you use the feature:
+Optional feature variables:
 
 ```env
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-GOOGLE_CALLBACK_URL=https://your-render-service.onrender.com/api/auth/google/callback
+GOOGLE_CALLBACK_URL=https://your-backend-domain.com/api/auth/google/callback
 RAZORPAY_KEY_ID=
 RAZORPAY_KEY_SECRET=
 RAZORPAY_WEBHOOK_SECRET=
@@ -48,104 +47,75 @@ SMTP_PASS=
 FROM_EMAIL=no-reply@promptvault.ai
 ```
 
-After Render deploys, open:
+Check the deployed API:
 
 ```text
-https://your-render-service.onrender.com/api/health
+https://your-backend-domain.com/api/health
 ```
 
-Expected result:
+## Frontend On Vercel
 
-```json
-{
-  "status": "ok",
-  "service": "PromptVault AI API",
-  "environment": "production",
-  "database": "connected"
-}
-```
-
-## 2. Deploy Frontend On Vercel
-
-Import the same GitHub repo into Vercel.
-
-Recommended Vercel setting:
+Create a Vercel project from the `client` folder.
 
 ```text
-Root Directory: leave empty / repository root
-```
-
-The included root `vercel.json` already sets:
-
-```text
-Framework: Vite
-Install Command: npm install --include=optional
-Build Command: cd client && npm run build
-Output Directory: client/dist
-SPA Rewrite: enabled
-```
-
-If you already set Vercel Root Directory to `client`, that also works now because `client/vercel.json` is included:
-
-```text
+Root Directory: client
+Framework Preset: Vite
 Install Command: npm install --include=optional
 Build Command: npm run build
 Output Directory: dist
 ```
 
-Vercel environment variables:
+Frontend environment variables:
 
 ```env
-VITE_API_URL=https://your-render-service.onrender.com/api
+VITE_API_URL=https://your-backend-domain.com/api
 VITE_RAZORPAY_KEY_ID=
 ```
 
-Redeploy Vercel after changing `VITE_API_URL`; Vite reads env variables during build.
+Redeploy after changing `VITE_API_URL`; Vite reads env variables during build.
 
-## 3. Connect Both Apps
+## Connect Both Apps
 
-After Vercel gives you a frontend URL, copy it into Render:
+After frontend deployment, set the frontend URL in the backend:
 
 ```env
-CLIENT_URL=https://your-vercel-app.vercel.app
+CLIENT_URL=https://your-frontend-domain.com
 ```
 
-After Render gives you a backend URL, copy it into Vercel:
+After backend deployment, set the backend API URL in the frontend:
 
 ```env
-VITE_API_URL=https://your-render-service.onrender.com/api
+VITE_API_URL=https://your-backend-domain.com/api
 ```
 
 No trailing slash is needed.
 
-## 4. MongoDB Atlas
-
-In Atlas:
+## MongoDB Atlas
 
 - Create a database user.
-- Add the Render outbound IPs to Network Access, or use `0.0.0.0/0` temporarily while testing.
+- Add the deployed backend IPs to Network Access, or use `0.0.0.0/0` temporarily while testing.
 - Make sure `MONGO_URI` includes the database name, for example `/promptvault`.
 - URL-encode special characters in the password.
 
-## 5. Quick Checks
+## Quick Checks
 
 Backend:
 
 ```text
-https://your-render-service.onrender.com/
-https://your-render-service.onrender.com/api/health
-https://your-render-service.onrender.com/api/prompts
+https://your-backend-domain.com/
+https://your-backend-domain.com/api/health
+https://your-backend-domain.com/api/prompts
 ```
 
 Frontend:
 
 ```text
-https://your-vercel-app.vercel.app
+https://your-frontend-domain.com
 ```
 
 If frontend loads but data does not:
 
-- Confirm Vercel `VITE_API_URL` includes `/api`.
-- Confirm Render `CLIENT_URL` exactly matches the Vercel origin.
+- Confirm `VITE_API_URL` includes `/api`.
+- Confirm backend `CLIENT_URL` exactly matches the frontend origin.
 - Confirm `/api/health` says `database: "connected"`.
-- If Vercel shows a Rollup native module error, clear Vercel build cache and confirm the install command is `npm install --include=optional`.
+- Clear the Vercel build cache if a dependency install issue appears.

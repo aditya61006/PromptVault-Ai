@@ -1,95 +1,122 @@
-PromptVault AI 🚀
+# PromptVault AI
 
-A modern full-stack MERN platform for discovering, creating, sharing, and managing AI prompts. PromptVault AI helps developers, creators, and AI enthusiasts organize premium prompts for tools like ChatGPT, Gemini, Claude, Midjourney, and more.
+A MERN prompt marketplace with a Vite React client and an Express/MongoDB API server.
 
-✨ Features
-🔐 Secure JWT Authentication & Authorization
-📝 Create, Update & Delete Prompts
-🔍 Search & Filter Prompts
-⭐ Ratings & Reviews System
-💳 Razorpay Payment Integration
-☁️ Cloudinary Image Uploads
-📱 Fully Responsive UI
-⚡ Smooth Animations with Framer Motion
-🛡️ Secure Backend with Middleware Protection
-👤 User Dashboard & Profile Management
-🛠️ Tech Stack
-Frontend
-React.js
-Vite
-Tailwind CSS
-Redux Toolkit
-React Router DOM
-Axios
-Framer Motion
-TanStack Query
-Backend
-Node.js
-Express.js
-MongoDB
-Mongoose
-JWT Authentication
-Razorpay API
-Multer
-Cloudinary
-📂 Project Structure
-PromptVault-AI/
-│
-├── frontend/          # React Frontend
-├── backend/           # Express Backend
-├── models/            # MongoDB Models
-├── routes/            # API Routes
-├── controllers/       # Business Logic
-├── middleware/        # Authentication & Security
-├── public/            # Static Assets
-└── README.md
-⚙️ Installation
-1️⃣ Clone Repository
-git clone https://github.com/your-username/PromptVault-AI.git
-2️⃣ Install Dependencies
-Frontend
-cd frontend
+The project is intentionally split into two standalone apps:
+
+```text
+prompthub/
+  client/   Vite + React frontend
+  server/   Express + MongoDB backend API
+```
+
+There is no root `package.json`. Install, run, build, and deploy each app from its own folder.
+
+## Run Locally
+
+Open one terminal for the backend:
+
+```bash
+cd server
 npm install
-Backend
-cd backend
-npm install
-🔑 Environment Variables
-
-Create a .env file inside backend directory:
-
-PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret_key
-
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-RAZORPAY_KEY_ID=your_key
-RAZORPAY_SECRET=your_secret
-▶️ Run Project
-Start Backend
-npm run server
-Start Frontend
+cp .env.example .env
 npm run dev
-🚀 Deployment
-Frontend → Vercel / Netlify
-Backend → Render / Railway
-Database → MongoDB Atlas
-Media Storage → Cloudinary
-📚 Learning Outcomes
+```
 
-This project helped me improve my understanding of:
+The API runs on:
 
-Full-stack MERN development
-REST APIs
-Authentication & Authorization
-Payment Gateway Integration
-Secure Backend Architecture
-State Management
-Cloud Storage Integration
-Responsive UI Design
-👨‍💻 Author
+```text
+http://localhost:5001
+http://localhost:5001/api/health
+```
 
-Developed by Aditya Choudhary.
+Open a second terminal for the frontend:
 
+```bash
+cd client
+npm install
+cp .env.example .env
+npm run dev
+```
+
+The client runs on:
+
+```text
+http://localhost:5173
+```
+
+In local development, the Vite proxy sends `/api` requests to `http://localhost:5001`.
+
+## Environment Files
+
+Backend: `server/.env`
+
+```env
+NODE_ENV=development
+PORT=5001
+CLIENT_URL=http://localhost:5173
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=replace_with_long_random_secret
+JWT_EXPIRES_IN=15m
+```
+
+Frontend: `client/.env`
+
+```env
+VITE_API_URL=http://localhost:5001/api
+VITE_RAZORPAY_KEY_ID=
+```
+
+## Build Separately
+
+Frontend:
+
+```bash
+cd client
+npm run build
+```
+
+Backend:
+
+```bash
+cd server
+npm start
+```
+
+## Deploy Separately
+
+Frontend can be deployed from the `client` folder on Vercel or Netlify.
+
+Vercel settings:
+
+```text
+Root Directory: client
+Install Command: npm install --include=optional
+Build Command: npm run build
+Output Directory: dist
+```
+
+Set this frontend environment variable:
+
+```env
+VITE_API_URL=https://your-backend-domain.com/api
+```
+
+Backend can be deployed from the `server` folder on Render, Railway, or a VPS.
+
+Render settings:
+
+```text
+Root Directory: server
+Build Command: npm install
+Start Command: npm start
+Health Check Path: /api/health
+```
+
+Set this backend environment variable to your deployed frontend origin:
+
+```env
+CLIENT_URL=https://your-frontend-domain.com
+```
+
+After both deploys are live, put the backend URL in the frontend `VITE_API_URL`, and put the frontend URL in the backend `CLIENT_URL`.

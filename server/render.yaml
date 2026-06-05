@@ -2,7 +2,6 @@ services:
   - type: web
     name: promptvault-ai-api
     env: node
-    rootDir: server
     plan: free
     buildCommand: npm install
     startCommand: npm start

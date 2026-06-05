@@ -58,11 +58,24 @@ VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
 
 ## Commands
 
+Install and run each app from its own folder.
+
+Backend:
+
 ```bash
+cd server
+npm install
+npm run dev
+npm run seed
+```
+
+Frontend:
+
+```bash
+cd client
 npm install
 npm run dev
 npm run build
-npm run seed
 ```
 
 ## Deployment
@@ -70,8 +83,9 @@ npm run seed
 Frontend on Vercel or Netlify:
 
 ```text
-Build command: npm run build --workspace client
-Output directory: client/dist
+Root: client
+Build command: npm run build
+Output directory: dist
 ```
 
 Backend on Render, Railway, or VPS:
