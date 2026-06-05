@@ -79,7 +79,7 @@ The included root `vercel.json` already sets:
 
 ```text
 Framework: Vite
-Install Command: npm install
+Install Command: npm install --include=optional
 Build Command: cd client && npm run build
 Output Directory: client/dist
 SPA Rewrite: enabled
@@ -88,6 +88,7 @@ SPA Rewrite: enabled
 If you already set Vercel Root Directory to `client`, that also works now because `client/vercel.json` is included:
 
 ```text
+Install Command: npm install --include=optional
 Build Command: npm run build
 Output Directory: dist
 ```
@@ -147,3 +148,4 @@ If frontend loads but data does not:
 - Confirm Vercel `VITE_API_URL` includes `/api`.
 - Confirm Render `CLIENT_URL` exactly matches the Vercel origin.
 - Confirm `/api/health` says `database: "connected"`.
+- If Vercel shows a Rollup native module error, clear Vercel build cache and confirm the install command is `npm install --include=optional`.
