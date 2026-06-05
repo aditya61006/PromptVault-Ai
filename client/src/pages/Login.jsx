@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 import Button from '../components/ui/Button.jsx';
 import { setCredentials } from '../redux/store.js';
-import { authService } from '../services/api.js';
+import { API_BASE_URL, authService } from '../services/api.js';
 
 export default function Login() {
   const { register, handleSubmit, formState: { isSubmitting } } = useForm();
@@ -31,7 +31,7 @@ export default function Login() {
         <input {...register('email', { required: true })} type="email" placeholder="Email" className="mt-8 w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 outline-none" />
         <input {...register('password', { required: true })} type="password" placeholder="Password" className="mt-3 w-full rounded-2xl border border-white/10 bg-white/10 px-4 py-3 outline-none" />
         <Button className="mt-5 w-full" disabled={isSubmitting}>{isSubmitting ? 'Signing in...' : 'Login'}</Button>
-        <Button as="a" href={`${import.meta.env.VITE_API_URL || '/api'}/auth/google`} type="button" variant="ghost" className="mt-3 w-full">Continue with Google</Button>
+        <Button as="a" href={`${API_BASE_URL}/auth/google`} type="button" variant="ghost" className="mt-3 w-full">Continue with Google</Button>
         <p className="mt-5 text-center text-sm text-slate-400">New here? <Link className="text-cyan-300" to="/register">Create account</Link></p>
       </form>
     </section>

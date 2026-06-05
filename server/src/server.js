@@ -1,13 +1,23 @@
-import dotenv from 'dotenv';
 import app from './app.js';
 import connectDB from './config/db.js';
 
-dotenv.config();
-
 const port = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === 'production';
+
+function validateEnvironment() {
+  const required = isProduction ? ['MONGO_URI', 'JWT_SECRET', 'CLIENT_URL'] : [];
+  const missing = required.filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    console.error(`Missing required production environment variables: ${missing.join(', ')}`);
+    process.exit(1);
+  }
+}
+
+validateEnvironment();
 
 const server = app.listen(port, () => {
   console.log(`PromptVault API running on port ${port}`);
+  console.log(`Health check available at /api/health`);
 });
 
 server.on('error', (error) => {

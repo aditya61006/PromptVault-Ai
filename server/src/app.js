@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -13,8 +14,15 @@ import routes from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorMiddleware.js';
 
 const app = express();
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map((origin) => origin.trim());
 const isProduction = process.env.NODE_ENV === 'production';
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+
+function getOriginWithoutTrailingSlash(origin) {
+  return origin ? origin.replace(/\/+$/, '') : origin;
+}
 
 app.set('trust proxy', 1);
 app.use(helmet());
@@ -22,8 +30,8 @@ app.use(cors({
   origin(origin, callback) {
     // Development: allow any origin so LAN/IP access works (Vite network URL).
     if (!isProduction) return callback(null, true);
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error('Not allowed by CORS'));
+    if (!origin || allowedOrigins.includes(getOriginWithoutTrailingSlash(origin))) return callback(null, true);
+    return callback(new Error(`Not allowed by CORS: ${origin}. Add it to CLIENT_URL.`));
   },
   credentials: true
 }));
@@ -36,16 +44,28 @@ app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp({ whitelist: ['tags', 'platforms', 'category'] }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 250, standardHeaders: true, legacyHeaders: false }));
-if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
+if (!isProduction && process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 
-app.get('/api/health', (req, res) => {
+function healthPayload() {
   const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+  return {
+    status: 'ok',
+    service: 'PromptVault AI API',
+    environment: process.env.NODE_ENV || 'development',
+    database: states[mongoose.connection.readyState] || 'unknown',
+    allowedOrigins
+  };
+}
+
+app.get('/', (req, res) => {
   res.json({
     status: 'ok',
     service: 'PromptVault AI API',
-    database: states[mongoose.connection.readyState] || 'unknown'
+    health: '/api/health'
   });
 });
+app.get('/health', (req, res) => res.json(healthPayload()));
+app.get('/api/health', (req, res) => res.json(healthPayload()));
 app.get('/api/hi', (req, res) => res.json({ status: 'ok', service: 'hi you are talking to promptvault ai api server' }));
 
 // Fail fast with a clear error when MongoDB isn't connected.
