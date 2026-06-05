@@ -69,14 +69,27 @@ Expected result:
 
 Import the same GitHub repo into Vercel.
 
-The included `vercel.json` already sets:
+Recommended Vercel setting:
+
+```text
+Root Directory: leave empty / repository root
+```
+
+The included root `vercel.json` already sets:
 
 ```text
 Framework: Vite
 Install Command: npm install
-Build Command: npm run build --workspace client
+Build Command: cd client && npm run build
 Output Directory: client/dist
 SPA Rewrite: enabled
+```
+
+If you already set Vercel Root Directory to `client`, that also works now because `client/vercel.json` is included:
+
+```text
+Build Command: npm run build
+Output Directory: dist
 ```
 
 Vercel environment variables:
